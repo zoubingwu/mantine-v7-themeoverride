@@ -251,6 +251,19 @@ const theme = createTheme({
         color: "carbon.5",
       },
     },
+    Card: {
+      defaultProps: {
+        shadow: "xs",
+        withBorder: true,
+      },
+      styles: (theme: MantineTheme) => {
+        return {
+          root: {
+            backgroundColor: theme.colors.carbon[0],
+          },
+        };
+      },
+    },
   },
 });
 
