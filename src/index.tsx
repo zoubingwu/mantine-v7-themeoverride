@@ -271,6 +271,11 @@ const theme = createTheme({
         c: "peacock.7",
       },
     },
+    Divider: {
+      defaultProps: {
+        color: "carbon.4",
+      },
+    },
   },
 });
 
