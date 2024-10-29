@@ -22,6 +22,9 @@ import {
   SkeletonProps,
   Tabs,
   Notification,
+  Text,
+  Menu,
+  MenuProps,
 } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -34,7 +37,16 @@ import {
   MantineEmotionProvider,
   keyframes,
 } from "@mantine/emotion";
-import { IconX, IconCheck } from "@tabler/icons-react";
+import {
+  IconX,
+  IconCheck,
+  IconSettings,
+  IconSearch,
+  IconPhoto,
+  IconMessageCircle,
+  IconTrash,
+  IconArrowsLeftRight,
+} from "@tabler/icons-react";
 
 export type ColorMap = typeof light;
 export type Color = keyof ColorMap;
@@ -360,6 +372,41 @@ const theme = createTheme({
         };
       },
     },
+    Menu: {
+      styles: (theme: MantineTheme, props: MenuProps) => {
+        const textColor = themeColor(theme, "carbon", 8);
+        const bgHoverColor = themeColor(theme, "carbon", 2);
+        const bgActiveColor = themeColor(theme, "carbon", 3);
+        const disabledColor = themeColor(theme, "carbon", 6);
+        return {
+          dropdown: {
+            boxShadow: theme.shadows.md,
+          },
+          item: {
+            transition: "background 150ms ease-in-out",
+            color: textColor,
+            "&:hover, &[data-hovered]": {
+              color: textColor,
+              backgroundColor: bgHoverColor,
+              textDecoration: "none",
+            },
+            "&:active, &[data-active]": {
+              color: textColor,
+              backgroundColor: bgActiveColor,
+            },
+            "&:disabled, &[data-disabled]": {
+              color: disabledColor,
+              userSelect: "none",
+              cursor: "not-allowed",
+              "&:hover, &[data-hovered]": {
+                color: disabledColor,
+                backgroundColor: "transparent",
+              },
+            },
+          },
+        };
+      },
+    },
   },
 });
 
@@ -507,6 +554,79 @@ function TestNotifications() {
   );
 }
 
+function TestMenu() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>Menu</h2>
+      <Menu shadow="md" width={200}>
+        <Menu.Target>
+          <Button>Toggle menu</Button>
+        </Menu.Target>
+
+        <Menu.Dropdown>
+          <Menu.Label>Application</Menu.Label>
+          <Menu.Item
+            leftSection={
+              <IconSettings style={{ width: rem(14), height: rem(14) }} />
+            }
+          >
+            Settings
+          </Menu.Item>
+          <Menu.Item
+            disabled
+            leftSection={
+              <IconMessageCircle style={{ width: rem(14), height: rem(14) }} />
+            }
+          >
+            Messages
+          </Menu.Item>
+          <Menu.Item
+            leftSection={
+              <IconPhoto style={{ width: rem(14), height: rem(14) }} />
+            }
+          >
+            Gallery
+          </Menu.Item>
+          <Menu.Item
+            leftSection={
+              <IconSearch style={{ width: rem(14), height: rem(14) }} />
+            }
+            rightSection={
+              <Text size="xs" c="dimmed">
+                ⌘K
+              </Text>
+            }
+          >
+            Search
+          </Menu.Item>
+
+          <Menu.Divider />
+
+          <Menu.Label>Danger zone</Menu.Label>
+          <Menu.Item
+            leftSection={
+              <IconArrowsLeftRight
+                style={{ width: rem(14), height: rem(14) }}
+              />
+            }
+          >
+            Transfer my data
+          </Menu.Item>
+          <Menu.Item
+            leftSection={
+              <IconTrash
+                style={{ width: rem(14), height: rem(14), color: "red" }}
+              />
+            }
+          >
+            <Text c="red">Delete my account</Text>
+          </Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -536,6 +656,8 @@ function App() {
       <TestTabs />
       <Divider my="md" />
       <TestNotifications />
+      <Divider my="md" />
+      <TestMenu />
     </Box>
   );
 }
