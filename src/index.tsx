@@ -17,6 +17,8 @@ import {
   Box,
   Anchor,
   Divider,
+  Skeleton,
+  SkeletonProps,
 } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -27,6 +29,7 @@ import {
   EmotionHelpers,
   emotionTransform,
   MantineEmotionProvider,
+  keyframes,
 } from "@mantine/emotion";
 
 export type ColorMap = typeof light;
@@ -253,6 +256,31 @@ const theme = createTheme({
         color: "carbon.5",
       },
     },
+    Skeleton: {
+      styles(theme: MantineTheme, props: SkeletonProps) {
+        const animation = keyframes({
+          "0%": {
+            backgroundPosition: "200% 0",
+          },
+          "100%": {
+            backgroundPosition: "-200% 0",
+          },
+        });
+        const c1 = themeColor(theme, "carbon", 2);
+        const c2 = themeColor(theme, "carbon", 4);
+        return {
+          root: {
+            "&::after": {
+              backgroundImage: `linear-gradient(90deg,${c1},${c2},${c1},${c2})`,
+              backgroundSize: "400% 100%",
+              animation: props.animate
+                ? `${animation} 5000ms ease-in-out infinite`
+                : "none",
+            },
+          },
+        };
+      },
+    },
     Card: {
       defaultProps: {
         shadow: "xs",
@@ -324,6 +352,7 @@ const sizes = ["xs", "sm", "md", "lg", "xl"];
 function Buttons() {
   return (
     <Card withBorder shadow="md">
+      <h2>Button</h2>
       <Group>
         {["carbon", "peacock", "red"].map((color) => {
           return variants.map((variant) => {
@@ -355,6 +384,7 @@ function Buttons() {
 function Anchors() {
   return (
     <Card withBorder shadow="md">
+      <h2>Anchor</h2>
       <Group>
         <Anchor href="https://mantine.dev">Mantine</Anchor>
         {["carbon", "peacock", "red"].map((color) => {
@@ -369,6 +399,18 @@ function Anchors() {
           carbon.9
         </Anchor>
       </Group>
+    </Card>
+  );
+}
+
+function Skeletons() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>Skeleton</h2>
+      <Skeleton height={50} circle mb="xl" />
+      <Skeleton height={8} radius="xl" />
+      <Skeleton height={8} mt={6} radius="xl" />
+      <Skeleton height={8} mt={6} width="70%" radius="xl" />
     </Card>
   );
 }
@@ -396,6 +438,8 @@ function App() {
       <Buttons />
       <Divider my="md" />
       <Anchors />
+      <Divider my="md" />
+      <Skeletons />
     </Box>
   );
 }
