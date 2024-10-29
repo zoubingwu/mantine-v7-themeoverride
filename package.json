@@ -1,0 +1,40 @@
+{
+  "name": "play-uikit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@emotion/cache": "11.13.1",
+    "@emotion/react": "11.13.3",
+    "@emotion/serialize": "1.3.2",
+    "@emotion/utils": "1.4.1",
+    "@mantine/core": "7.13.4",
+    "@mantine/emotion": "7.13.4",
+    "@mantine/hooks": "7.13.4",
+    "clsx": "^2.1.1",
+    "lodash-es": "^4.17.21",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "4.3.3",
+    "lefthook": "1.8.2",
+    "postcss": "8.4.47",
+    "postcss-preset-mantine": "1.17.0",
+    "postcss-simple-vars": "7.0.1",
+    "vite": "5.4.10"
+  },
+  "packageManager": "pnpm@9.12.0"
+}
