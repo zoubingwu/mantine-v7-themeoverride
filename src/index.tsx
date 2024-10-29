@@ -14,6 +14,7 @@ import {
   Loader,
   DEFAULT_THEME,
   mergeMantineTheme,
+  Box,
 } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -245,6 +246,11 @@ const theme = createTheme({
         return finalStyles;
       },
     },
+    Loader: {
+      defaultProps: {
+        color: "carbon.5",
+      },
+    },
   },
 });
 
@@ -287,15 +293,42 @@ function Provider({ children }: { children: React.ReactNode }) {
   );
 }
 
+const variants = ["default", "filled", "light", "subtle", "outline"];
+const sizes = ["xs", "sm", "md", "lg", "xl"];
+
+function Buttons() {
+  return (
+    <Card withBorder shadow="md">
+      <Group>
+        {variants.map((variant) => {
+          return sizes.map((size) => {
+            return (
+              <Button key={`${variant}-${size}`} variant={variant} size={size}>
+                {variant} {size}
+              </Button>
+            );
+          });
+        })}
+
+        <Button loading size="md">
+          Loading...
+        </Button>
+        <Button leftSection={<Loader size="xs" />}>with left section</Button>
+        <Button rightSection={<Loader size="xs" />}>with right section</Button>
+      </Group>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
   console.log("computedColorScheme", computedColorScheme);
 
   return (
-    <div>
+    <Box p="md">
       <h1>hello world</h1>
-      <Group>
+      <Group mb="md">
         <Button onClick={() => setColorScheme("light")}>
           Color Scheme Light
         </Button>
@@ -306,31 +339,9 @@ function App() {
           Color Scheme Auto
         </Button>
       </Group>
-      <Card withBorder shadow="md" m="md">
-        <Group>
-          {["default", "filled", "light", "subtle", "outline"].map(
-            (variant) => {
-              return ["xs", "sm", "md", "lg", "xl"].map((size) => {
-                return (
-                  <Button
-                    key={`${variant}-${size}`}
-                    variant={variant}
-                    size={size}
-                  >
-                    {variant} {size}
-                  </Button>
-                );
-              });
-            },
-          )}
 
-          <Button loading size="md">
-            Loading...
-          </Button>
-          <Button leftSection={<Loader size="xs" />}>with left section</Button>
-        </Group>
-      </Card>
-    </div>
+      <Buttons />
+    </Box>
   );
 }
 
