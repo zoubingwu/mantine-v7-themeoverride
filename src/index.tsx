@@ -19,6 +19,7 @@ import {
   Divider,
   Skeleton,
   SkeletonProps,
+  Tabs,
 } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -304,6 +305,29 @@ const theme = createTheme({
         color: "carbon.4",
       },
     },
+    Tabs: {
+      styles(theme: MantineTheme) {
+        return {
+          list: {
+            gap: 32,
+            border: 0,
+          },
+          tab: {
+            color: themeColor(theme, "carbon", 7),
+            fontWeight: 600,
+            paddingLeft: 0,
+            paddingRight: 0,
+            "&[data-active]": {
+              color: themeColor(theme, "carbon", 9),
+            },
+            "&:hover": {
+              color: themeColor(theme, "carbon", 9),
+            },
+            "&:focus": { outlineColor: "transparent" },
+          },
+        };
+      },
+    },
   },
 });
 
@@ -415,6 +439,25 @@ function Skeletons() {
   );
 }
 
+function TabsTest() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>Tabs</h2>
+      <Tabs defaultValue="gallery">
+        <Tabs.List>
+          <Tabs.Tab value="gallery">Gallery</Tabs.Tab>
+          <Tabs.Tab value="messages">Messages</Tabs.Tab>
+          <Tabs.Tab value="settings">Settings</Tabs.Tab>
+        </Tabs.List>
+
+        <Tabs.Panel value="gallery">Gallery tab content</Tabs.Panel>
+        <Tabs.Panel value="messages">Messages tab content</Tabs.Panel>
+        <Tabs.Panel value="settings">Settings tab content</Tabs.Panel>
+      </Tabs>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -440,6 +483,8 @@ function App() {
       <Anchors />
       <Divider my="md" />
       <Skeletons />
+      <Divider my="md" />
+      <TabsTest />
     </Box>
   );
 }
