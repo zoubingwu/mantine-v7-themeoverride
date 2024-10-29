@@ -260,7 +260,7 @@ function useColorScheme() {
   >({
     key: "mantine-color-scheme",
     defaultValue: "light",
-    getInitialValueInEffect: true,
+    getInitialValueInEffect: false,
   });
 
   return { colorScheme, setColorScheme };
@@ -300,13 +300,20 @@ function Buttons() {
   return (
     <Card withBorder shadow="md">
       <Group>
-        {variants.map((variant) => {
-          return sizes.map((size) => {
-            return (
-              <Button key={`${variant}-${size}`} variant={variant} size={size}>
-                {variant} {size}
-              </Button>
-            );
+        {["carbon", "peacock", "red"].map((color) => {
+          return variants.map((variant) => {
+            return sizes.map((size) => {
+              return (
+                <Button
+                  key={`${variant}-${size}-${color}`}
+                  color={color}
+                  variant={variant}
+                  size={size}
+                >
+                  {variant} {size}
+                </Button>
+              );
+            });
           });
         })}
 
