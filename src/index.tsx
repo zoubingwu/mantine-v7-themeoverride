@@ -15,6 +15,8 @@ import {
   DEFAULT_THEME,
   mergeMantineTheme,
   Box,
+  Anchor,
+  Divider,
 } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -264,6 +266,11 @@ const theme = createTheme({
         };
       },
     },
+    Anchor: {
+      defaultProps: {
+        c: "peacock.7",
+      },
+    },
   },
 });
 
@@ -340,6 +347,27 @@ function Buttons() {
   );
 }
 
+function Anchors() {
+  return (
+    <Card withBorder shadow="md">
+      <Group>
+        <Anchor href="https://mantine.dev">Mantine</Anchor>
+        {["carbon", "peacock", "red"].map((color) => {
+          return (
+            <Anchor key={color} c={color}>
+              {color}
+            </Anchor>
+          );
+        })}
+
+        <Anchor href="https://mantine.dev" c="carbon.9">
+          carbon.9
+        </Anchor>
+      </Group>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -361,6 +389,8 @@ function App() {
       </Group>
 
       <Buttons />
+      <Divider my="md" />
+      <Anchors />
     </Box>
   );
 }
