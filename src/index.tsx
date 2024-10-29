@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import {
   Button,
@@ -25,6 +25,14 @@ import {
   Text,
   Menu,
   MenuProps,
+  NavLinkProps,
+  StepperProps,
+  AlertProps,
+  NavLink,
+  Badge,
+  Stepper,
+  Alert,
+  TabsProps,
 } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -46,6 +54,7 @@ import {
   IconMessageCircle,
   IconTrash,
   IconArrowsLeftRight,
+  IconInfoCircle,
 } from "@tabler/icons-react";
 
 export type ColorMap = typeof light;
@@ -297,41 +306,18 @@ const theme = createTheme({
         };
       },
     },
-    Card: {
-      defaultProps: {
-        shadow: "xs",
-        withBorder: true,
-      },
-      styles: (theme: MantineTheme) => {
-        return {
-          root: {
-            backgroundColor: theme.colors.carbon[0],
-          },
-        };
-      },
-    },
-    Anchor: {
-      defaultProps: {
-        c: "peacock.7",
-      },
-    },
-    Divider: {
-      defaultProps: {
-        color: "carbon.4",
-      },
-    },
     Tabs: {
-      styles(theme: MantineTheme) {
+      styles(theme: MantineTheme, props: TabsProps) {
         return {
           list: {
-            gap: 32,
+            gap: props.orientation === "vertical" ? 8 : 32,
             border: 0,
           },
           tab: {
             color: themeColor(theme, "carbon", 7),
             fontWeight: 600,
             paddingLeft: 0,
-            paddingRight: 0,
+            paddingRight: props.orientation === "vertical" ? 8 : 0,
             "&[data-active]": {
               color: themeColor(theme, "carbon", 9),
             },
@@ -405,6 +391,148 @@ const theme = createTheme({
             },
           },
         };
+      },
+    },
+    NavLink: {
+      defaultProps: {
+        px: 10,
+        lh: 1.5,
+        fw: 500,
+        variant: "light",
+      },
+      styles: (theme: MantineTheme, props: NavLinkProps) => {
+        const withThemeColor = (shade: number) =>
+          themeColor(theme, props.color ?? theme.primaryColor, shade);
+
+        const rootStyles = {
+          light: {
+            color: withThemeColor(8),
+            "&:hover": {
+              color: withThemeColor(8),
+              backgroundColor: withThemeColor(2),
+            },
+            "&:active": {
+              color: withThemeColor(8),
+              backgroundColor: withThemeColor(4),
+            },
+            "&[data-active]": {
+              color: withThemeColor(9),
+              backgroundColor: withThemeColor(4),
+              "&:hover": {
+                backgroundColor: withThemeColor(4),
+              },
+              "&:active": {
+                backgroundColor: withThemeColor(4),
+              },
+            },
+          },
+        };
+
+        // @ts-ignore
+        const matchedStyle = rootStyles[props.variant] || {};
+
+        return {
+          root: {
+            ...matchedStyle,
+            borderRadius: theme.defaultRadius,
+            transition: "background 150ms ease-in-out",
+          },
+          section: {
+            marginRight: 10,
+          },
+        };
+      },
+    },
+    Stepper: {
+      styles: (theme: MantineTheme, props: StepperProps) => {
+        const color = props.color || theme.primaryColor;
+        return {
+          stepIcon: {
+            backgroundColor: themeColor(theme, color, 0),
+            borderColor: themeColor(theme, color, 4),
+            color: themeColor(theme, color, 7),
+            "&[data-progress]": {
+              backgroundColor: themeColor(theme, color, 9),
+              color: themeColor(theme, color, 0),
+              borderColor: themeColor(theme, color, 9),
+            },
+            "&[data-completed]": {
+              backgroundColor: themeColor(theme, color, 3),
+              color: themeColor(theme, color, 9),
+              borderColor: themeColor(theme, color, 9),
+            },
+          },
+          stepCompletedIcon: {
+            color: themeColor(theme, color, 9),
+            "& > svg": {
+              width: "14px !important",
+              height: "14px !important",
+            },
+          },
+          separator: {
+            backgroundColor: themeColor(theme, color, 4),
+          },
+          separatorActive: {
+            backgroundColor: themeColor(theme, color, 9),
+          },
+          verticalSeparator: {
+            backgroundColor: themeColor(theme, color, 4),
+          },
+          verticalSeparatorActive: {
+            backgroundColor: themeColor(theme, color, 9),
+          },
+        };
+      },
+    },
+    Alert: {
+      defaultProps: {
+        color: "peacock",
+      },
+      styles: (theme: MantineTheme, props: AlertProps) => {
+        const color = props.color || theme.primaryColor;
+        return {
+          root: {
+            borderRadius: 0,
+            border: "none",
+            borderLeft: `2px solid ${themeColor(theme, color, 7)}`,
+            color: themeColor(theme, color, 9),
+            backgroundColor: themeColor(theme, color, 1),
+          },
+          title: {
+            color: "inherit",
+          },
+          icon: {
+            color: "inherit",
+            marginRight: 4,
+          },
+          message: {
+            color: "inherit",
+          },
+        };
+      },
+    },
+
+    Card: {
+      defaultProps: {
+        shadow: "xs",
+        withBorder: true,
+      },
+      styles: (theme: MantineTheme) => {
+        return {
+          root: {
+            backgroundColor: theme.colors.carbon[0],
+          },
+        };
+      },
+    },
+    Anchor: {
+      defaultProps: {
+        c: "peacock.7",
+      },
+    },
+    Divider: {
+      defaultProps: {
+        color: "carbon.4",
       },
     },
   },
@@ -627,6 +755,85 @@ function TestMenu() {
   );
 }
 
+function TestNavLinks() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>NavLink</h2>
+      <Box>
+        <NavLink label="Disabled" disabled />
+        <NavLink
+          label="With description"
+          description="Additional information"
+          leftSection={
+            <Badge
+              size="xs"
+              variant="filled"
+              color="red"
+              sx={{
+                width: 16,
+                height: 16,
+                padding: 0,
+              }}
+            >
+              3
+            </Badge>
+          }
+        />
+        <NavLink label="Active subtle" variant="subtle" active />
+        <NavLink label="Active light" active />
+        <NavLink label="Active filled" variant="filled" active />
+      </Box>
+    </Card>
+  );
+}
+
+function TestAlert() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>Alert</h2>
+
+      <Alert variant="light" title="Alert title" icon={<IconInfoCircle />}>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. At officiis,
+        quae tempore necessitatibus placeat saepe.
+      </Alert>
+    </Card>
+  );
+}
+
+function TestStepper() {
+  const [active, setActive] = useState(1);
+  const nextStep = () =>
+    setActive((current) => (current < 3 ? current + 1 : current));
+  const prevStep = () =>
+    setActive((current) => (current > 0 ? current - 1 : current));
+  return (
+    <Card withBorder shadow="md">
+      <h2>Stepper</h2>
+      <Stepper active={active} onStepClick={setActive}>
+        <Stepper.Step label="First step" description="Create an account">
+          Step 1 content: Create an account
+        </Stepper.Step>
+        <Stepper.Step label="Second step" description="Verify email">
+          Step 2 content: Verify email
+        </Stepper.Step>
+        <Stepper.Step label="Final step" description="Get full access">
+          Step 3 content: Get full access
+        </Stepper.Step>
+        <Stepper.Completed>
+          Completed, click back button to get to previous step
+        </Stepper.Completed>
+      </Stepper>
+
+      <Group justify="center" mt="xl">
+        <Button variant="default" onClick={prevStep}>
+          Back
+        </Button>
+        <Button onClick={nextStep}>Next step</Button>
+      </Group>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -647,17 +854,47 @@ function App() {
         </Button>
       </Group>
 
-      <TestButtons />
-      <Divider my="md" />
-      <TestAnchors />
-      <Divider my="md" />
-      <TestSkeletons />
-      <Divider my="md" />
-      <TestTabs />
-      <Divider my="md" />
-      <TestNotifications />
-      <Divider my="md" />
-      <TestMenu />
+      <Tabs defaultValue="buttons" orientation="vertical">
+        <Tabs.List>
+          <Tabs.Tab value="buttons">Buttons</Tabs.Tab>
+          <Tabs.Tab value="anchors">Anchors</Tabs.Tab>
+          <Tabs.Tab value="skeletons">Skeletons</Tabs.Tab>
+          <Tabs.Tab value="tabs">Tabs</Tabs.Tab>
+          <Tabs.Tab value="notifications">Notifications</Tabs.Tab>
+          <Tabs.Tab value="menu">Menu</Tabs.Tab>
+          <Tabs.Tab value="navlinks">NavLinks</Tabs.Tab>
+          <Tabs.Tab value="stepper">Stepper</Tabs.Tab>
+          <Tabs.Tab value="alert">Alert</Tabs.Tab>
+        </Tabs.List>
+
+        <Tabs.Panel value="buttons" pl="md">
+          <TestButtons />
+        </Tabs.Panel>
+        <Tabs.Panel value="anchors" pl="md">
+          <TestAnchors />
+        </Tabs.Panel>
+        <Tabs.Panel value="skeletons" pl="md">
+          <TestSkeletons />
+        </Tabs.Panel>
+        <Tabs.Panel value="tabs" pl="md">
+          <TestTabs />
+        </Tabs.Panel>
+        <Tabs.Panel value="notifications" pl="md">
+          <TestNotifications />
+        </Tabs.Panel>
+        <Tabs.Panel value="menu" pl="md">
+          <TestMenu />
+        </Tabs.Panel>
+        <Tabs.Panel value="navlinks" pl="md">
+          <TestNavLinks />
+        </Tabs.Panel>
+        <Tabs.Panel value="stepper" pl="md">
+          <TestStepper />
+        </Tabs.Panel>
+        <Tabs.Panel value="alert" pl="md">
+          <TestAlert />
+        </Tabs.Panel>
+      </Tabs>
     </Box>
   );
 }
