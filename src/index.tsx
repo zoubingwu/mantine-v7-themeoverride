@@ -9,6 +9,7 @@ import {
   useComputedColorScheme,
   getPrimaryShade,
   getThemeColor,
+  rem,
   Card,
   Group,
   Loader,
@@ -20,6 +21,7 @@ import {
   Skeleton,
   SkeletonProps,
   Tabs,
+  Notification,
 } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -32,6 +34,7 @@ import {
   MantineEmotionProvider,
   keyframes,
 } from "@mantine/emotion";
+import { IconX, IconCheck } from "@tabler/icons-react";
 
 export type ColorMap = typeof light;
 export type Color = keyof ColorMap;
@@ -328,6 +331,35 @@ const theme = createTheme({
         };
       },
     },
+    Notification: {
+      styles: (theme: MantineTheme) => {
+        return {
+          root: {
+            padding: 8,
+            paddingLeft: 28,
+
+            "&:before": {
+              top: 8,
+              bottom: 8,
+              left: 8,
+              width: 4,
+            },
+          },
+          body: {
+            marginRight: 8,
+            lineHeight: 20,
+            fontSize: 16,
+          },
+          title: {
+            fontWeight: 600,
+            color: themeColor(theme, "carbon", 8),
+          },
+          description: {
+            color: themeColor(theme, "carbon", 7),
+          },
+        };
+      },
+    },
   },
 });
 
@@ -373,7 +405,7 @@ function Provider({ children }: { children: React.ReactNode }) {
 const variants = ["default", "filled", "light", "subtle", "outline"];
 const sizes = ["xs", "sm", "md", "lg", "xl"];
 
-function Buttons() {
+function TestButtons() {
   return (
     <Card withBorder shadow="md">
       <h2>Button</h2>
@@ -405,7 +437,7 @@ function Buttons() {
   );
 }
 
-function Anchors() {
+function TestAnchors() {
   return (
     <Card withBorder shadow="md">
       <h2>Anchor</h2>
@@ -427,7 +459,7 @@ function Anchors() {
   );
 }
 
-function Skeletons() {
+function TestSkeletons() {
   return (
     <Card withBorder shadow="md">
       <h2>Skeleton</h2>
@@ -439,7 +471,7 @@ function Skeletons() {
   );
 }
 
-function TabsTest() {
+function TestTabs() {
   return (
     <Card withBorder shadow="md">
       <h2>Tabs</h2>
@@ -454,6 +486,23 @@ function TabsTest() {
         <Tabs.Panel value="messages">Messages tab content</Tabs.Panel>
         <Tabs.Panel value="settings">Settings tab content</Tabs.Panel>
       </Tabs>
+    </Card>
+  );
+}
+
+function TestNotifications() {
+  const xIcon = <IconX style={{ width: rem(20), height: rem(20) }} />;
+  const checkIcon = <IconCheck style={{ width: rem(20), height: rem(20) }} />;
+
+  return (
+    <Card withBorder shadow="md">
+      <h2>Notification</h2>
+      <Notification icon={xIcon} color="red" title="Bummer!">
+        Something went wrong
+      </Notification>
+      <Notification icon={checkIcon} color="teal" title="All good!" mt="md">
+        Everything is fine
+      </Notification>
     </Card>
   );
 }
@@ -478,13 +527,15 @@ function App() {
         </Button>
       </Group>
 
-      <Buttons />
+      <TestButtons />
       <Divider my="md" />
-      <Anchors />
+      <TestAnchors />
       <Divider my="md" />
-      <Skeletons />
+      <TestSkeletons />
       <Divider my="md" />
-      <TabsTest />
+      <TestTabs />
+      <Divider my="md" />
+      <TestNotifications />
     </Box>
   );
 }

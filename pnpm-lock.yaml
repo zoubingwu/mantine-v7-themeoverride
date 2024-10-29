@@ -29,6 +29,9 @@ importers:
       '@mantine/hooks':
         specifier: 7.13.4
         version: 7.13.4(react@18.3.1)
+      '@tabler/icons-react':
+        specifier: 3.21.0
+        version: 3.21.0(react@18.3.1)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -558,6 +561,14 @@ packages:
     resolution: {integrity: sha512-2mLH46K1u3r6uwc95hU+OR9q/ggYMpnS7pSp83Ece1HUQgF9Nh/QwTK5rcgbFnV9j+08yBrU5sA/P0RK2MSBNA==}
     cpu: [x64]
     os: [win32]
+
+  '@tabler/icons-react@3.21.0':
+    resolution: {integrity: sha512-Qq0GnZzzccbv/zuMyXAUUPlogNAqx9KsF8cr/ev3bxs+GMObqNEjXv1eZl9GFzxyQTS435siJNU8A1BaIYhX8g==}
+    peerDependencies:
+      react: '>= 16'
+
+  '@tabler/icons@3.21.0':
+    resolution: {integrity: sha512-5+GkkmWCr1wgMor5cOF1/YYflTQdc15y10FUikJ3HW8hDiFjfbuoAHJi17FT1vwsr1sA78rkJMn+fDoOOjnnPA==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -1594,6 +1605,13 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.24.2':
     optional: true
+
+  '@tabler/icons-react@3.21.0(react@18.3.1)':
+    dependencies:
+      '@tabler/icons': 3.21.0
+      react: 18.3.1
+
+  '@tabler/icons@3.21.0': {}
 
   '@types/babel__core@7.20.5':
     dependencies:
