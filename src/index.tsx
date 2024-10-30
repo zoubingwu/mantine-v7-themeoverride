@@ -57,6 +57,8 @@ import {
   TableData,
   SwitchProps,
   Switch,
+  RadioProps,
+  Radio,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -80,6 +82,7 @@ import {
   IconArrowsLeftRight,
   IconInfoCircle,
 } from "@tabler/icons-react";
+import { transform } from "typescript";
 
 export type ColorMap = typeof light;
 export type Color = keyof ColorMap;
@@ -1013,6 +1016,68 @@ const theme = createTheme({
         };
       },
     },
+    Radio: {
+      styles(theme: MantineTheme, props: RadioProps) {
+        const color = (
+          props.color?.includes(".")
+            ? props.color.split(".")[0]
+            : (props.color ?? "carbon")
+        ) as Color;
+        const shade = color.includes("carbon") ? 9 : 7;
+
+        const sizes = {
+          xs: 14,
+          sm: 16,
+          md: 20,
+          lg: 24,
+          xl: 30,
+        };
+
+        const iconSizes = {
+          xs: 5,
+          sm: 6,
+          md: 8,
+          lg: 10,
+          xl: 12,
+        };
+
+        // @ts-ignore
+        const size = sizes[props.size ?? "sm"];
+        // @ts-ignore
+        const iconSize = iconSizes[props.size ?? "sm"];
+
+        return {
+          root: {
+            "--radio-size": rem(size),
+            "--radio-icon-size": rem(iconSize),
+            "--radio-color": themeColor(theme, color, shade) + " !important",
+            "--radio-icon-color":
+              props.variant === "outline"
+                ? themeColor(theme, color, shade)
+                : theme.white + " !important",
+          },
+          label: {
+            lineHeight: `${size}px`,
+          },
+          icon: {
+            transform: "var(--radio-icon-transform, scale(0.2))",
+          },
+          radio: {
+            "&:disabled:not(:checked)": {
+              background: themeColor(theme, "carbon", 4),
+              borderColor: themeColor(theme, "carbon", 6),
+              cursor: "not-allowed",
+            },
+            "&:disabled:checked": {
+              color: themeColor(theme, "carbon", 2),
+              background: themeColor(theme, "carbon", 6),
+              borderColor: themeColor(theme, "carbon", 6),
+              cursor: "not-allowed",
+            },
+          },
+        };
+      },
+    },
 
     Anchor: {
       defaultProps: {
@@ -1454,6 +1519,47 @@ function TestSwitch() {
   );
 }
 
+function TestRadio() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>Radio</h2>
+      <Stack>
+        {sizes.map((size) => {
+          return <Radio key={size} label={size} />;
+        })}
+        <Radio checked onChange={() => {}} label="Checked radio" />
+        <Radio
+          checked
+          variant="outline"
+          onChange={() => {}}
+          label="Outline checked radio"
+        />
+        <Radio disabled label="Disabled radio" />
+        <Radio
+          disabled
+          checked
+          onChange={() => {}}
+          label="Disabled checked radio"
+        />
+
+        <Radio.Group
+          name="favoriteFramework"
+          label="Select your favorite framework/library"
+          description="This is anonymous"
+          withAsterisk
+        >
+          <Group mt="xs">
+            <Radio value="react" label="React" />
+            <Radio value="svelte" label="Svelte" />
+            <Radio value="ng" label="Angular" />
+            <Radio value="vue" label="Vue" />
+          </Group>
+        </Radio.Group>
+      </Stack>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -1476,6 +1582,7 @@ function App() {
     "modal",
     "table",
     "switch",
+    "radio",
   ];
 
   return (
@@ -1551,6 +1658,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="switch" pl="md">
           <TestSwitch />
+        </Tabs.Panel>
+        <Tabs.Panel value="radio" pl="md">
+          <TestRadio />
         </Tabs.Panel>
       </Tabs>
     </Box>
