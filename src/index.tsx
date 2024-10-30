@@ -60,6 +60,7 @@ import {
   RadioProps,
   Radio,
   SegmentedControl,
+  Tooltip,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -1104,6 +1105,19 @@ const theme = createTheme({
         };
       },
     },
+    Tooltip: {
+      defaultProps: {
+        withArrow: true,
+      },
+      styles(theme: MantineTheme) {
+        return {
+          tooltip: {
+            backgroundColor: themeColor(theme, "carbon", 8),
+            color: themeColor(theme, "carbon", 1),
+          },
+        };
+      },
+    },
 
     Anchor: {
       defaultProps: {
@@ -1595,6 +1609,17 @@ function TestSegmentedControl() {
   );
 }
 
+function TestTooltip() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>Tooltip</h2>
+      <Tooltip label="Tooltip">
+        <Button>Button with tooltip</Button>
+      </Tooltip>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -1619,6 +1644,7 @@ function App() {
     "switch",
     "radio",
     "segmented-control",
+    "tooltip",
   ];
 
   return (
@@ -1700,6 +1726,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="segmented-control" pl="md">
           <TestSegmentedControl />
+        </Tabs.Panel>
+        <Tabs.Panel value="tooltip" pl="md">
+          <TestTooltip />
         </Tabs.Panel>
       </Tabs>
     </Box>
