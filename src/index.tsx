@@ -51,6 +51,7 @@ import {
   Drawer,
   DrawerProps,
   ModalBaseOverlayProps,
+  Modal,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -887,9 +888,48 @@ const theme = createTheme({
     Drawer: {
       defaultProps: (theme: MantineTheme) => ({
         overlayProps: {
-          opacity: 0.9,
+          backgroundOpacity: 0.9,
           blur: 3,
           color: themeColor(theme, "carbon", 2),
+        },
+      }),
+    },
+    Modal: {
+      defaultProps: (theme: MantineTheme) => ({
+        shadow: "xl",
+        padding: 0,
+        centered: true,
+        transitionProps: {
+          duration: 200,
+        },
+        overlayProps: {
+          backgroundOpacity: 0.9,
+          blur: 3,
+          color: themeColor(theme, "carbon", 2),
+        },
+      }),
+      styles: (theme: MantineTheme) => ({
+        content: {
+          border: `1px solid ${themeColor(theme, "carbon", 4)} !important`,
+        },
+        header: {
+          borderTopLeftRadius: theme.defaultRadius,
+          borderTopRightRadius: theme.defaultRadius,
+          padding: "16px 16px 16px 24px",
+          margin: 0,
+          backgroundColor: themeColor(theme, "carbon", 1),
+        },
+        title: {
+          fontWeight: 700,
+          fontSize: 16,
+          lineHeight: 1.5,
+          color: themeColor(theme, "carbon", 9),
+        },
+        body: {
+          padding: 24,
+          backgroundColor: themeColor(theme, "carbon", 0),
+          borderBottomLeftRadius: theme.defaultRadius,
+          borderBottomRightRadius: theme.defaultRadius,
         },
       }),
     },
@@ -1279,6 +1319,20 @@ function TestDrawer() {
   );
 }
 
+function TestModal() {
+  const [opened, { open, close }] = useDisclosure(false);
+  return (
+    <Card withBorder shadow="md">
+      <h2>Modal</h2>
+      <Modal opened={opened} onClose={close} title="Authentication">
+        {/* Modal content */}
+      </Modal>
+
+      <Button onClick={open}>Open Modal</Button>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -1298,6 +1352,7 @@ function App() {
     "badge",
     "checkbox",
     "drawer",
+    "modal",
   ];
 
   return (
@@ -1364,6 +1419,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="drawer" pl="md">
           <TestDrawer />
+        </Tabs.Panel>
+        <Tabs.Panel value="modal" pl="md">
+          <TestModal />
         </Tabs.Panel>
       </Tabs>
     </Box>
