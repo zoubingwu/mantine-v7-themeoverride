@@ -9,6 +9,7 @@ import {
   useComputedColorScheme,
   getPrimaryShade,
   getThemeColor,
+  getSize,
   rem,
   Card,
   Group,
@@ -33,6 +34,18 @@ import {
   Stepper,
   Alert,
   TabsProps,
+  SelectProps,
+  InputProps,
+  TextareaProps,
+  MultiSelectProps,
+  Input,
+  Select,
+  MultiSelect,
+  Textarea,
+  PasswordInput,
+  NumberInput,
+  Stack,
+  TextInput,
 } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -67,18 +80,120 @@ declare module "@mantine/core" {
   }
 }
 
-function useSystemColorScheme(initialValue?: "dark" | "light") {
-  return useMediaQuery(
-    "(prefers-color-scheme: dark)",
-    initialValue === "dark",
-    { getInitialValueInEffect: false },
-  )
+function useOperateSystemColorScheme() {
+  return useMediaQuery("(prefers-color-scheme: dark)", false, {
+    getInitialValueInEffect: false,
+  })
     ? "dark"
     : "light";
 }
 
 function themeColor(theme: MantineTheme, color: string, shade: number) {
   return getThemeColor([color, shade].join("."), theme);
+}
+
+function getInputStyles(theme: MantineTheme, props: Pick<InputProps, "size">) {
+  const sizes = {
+    xl: 48,
+    lg: 44,
+    md: 40,
+    sm: 32,
+    xs: 28,
+  };
+  const fontSizes = {
+    xl: 16,
+    lg: 14,
+    md: 14,
+    sm: 13,
+    xs: 12,
+  };
+  // @ts-ignore
+  const size = sizes[props.size ?? "md"];
+  // @ts-ignore
+  const inputFontSize = fontSizes[props.size ?? "md"];
+
+  const inputSize = {
+    height: size,
+    minHeight: size,
+    lineHeight: `${size - 2}px`,
+    fontSize: inputFontSize,
+  };
+  const passwordInnerInputSize = {
+    height: size - 2,
+    minHeight: size - 2,
+    lineHeight: `${size - 2}px`,
+    fontSize: inputFontSize,
+  };
+
+  return {
+    label: {
+      color: themeColor(theme, "carbon", 8),
+      marginBottom: 6,
+      lineHeight: "20px",
+      fontSize: 14,
+    },
+    description: {
+      color: themeColor(theme, "carbon", 7),
+      fontSize: 12,
+    },
+    input: {
+      ...inputSize,
+      color: theme.colors.carbon[8],
+      border: `1px solid ${themeColor(theme, "carbon", 4)}`,
+      backgroundColor: themeColor(theme, "carbon", 0),
+
+      "&:hover": {
+        borderColor: themeColor(theme, "carbon", 5),
+      },
+      "&:focus, &:focus-within": {
+        borderColor: themeColor(theme, "carbon", 9),
+      },
+      "&:disabled": {
+        borderColor: themeColor(theme, "carbon", 4),
+        backgroundColor: themeColor(theme, "carbon", 2),
+        color: themeColor(theme, "carbon", 8),
+        opacity: 1,
+      },
+      "&::placeholder": {
+        color: themeColor(theme, "carbon", 6),
+      },
+
+      "& .mantine-PasswordInput-innerInput": {
+        ...passwordInnerInputSize,
+        "&::placeholder": {
+          color: themeColor(theme, "carbon", 6),
+        },
+      },
+    },
+    error: {
+      color: themeColor(theme, "red", 7),
+    },
+    wrapper: {
+      "&[data-error]": {
+        ".mantine-Input-input, .mantine-TextInput-input, .mantine-PasswordInput-innerInput":
+          {
+            color: themeColor(theme, "red", 7),
+            borderColor: themeColor(theme, "red", 4),
+
+            "& .mantine-PasswordInput-innerInput": {
+              borderColor: "transparent",
+            },
+            "&:hover": {
+              borderColor: themeColor(theme, "red", 4),
+            },
+            "&:focus, &:focus-within": {
+              borderColor: themeColor(theme, "red", 4),
+            },
+            "&::placeholder": {
+              color: themeColor(theme, "carbon", 6),
+            },
+          },
+      },
+    },
+    section: {
+      overflow: "hidden",
+    },
+  };
 }
 
 const theme = createTheme({
@@ -511,6 +626,144 @@ const theme = createTheme({
         };
       },
     },
+    Select: {
+      defaultProps: {
+        transition: "fade",
+        transitionDuration: 200,
+        transitionTimingFunction: "ease",
+        size: "md",
+        withCheckIcon: false,
+      },
+      styles: (theme: MantineTheme, props: SelectProps) => {
+        const styles = getInputStyles(theme, { size: props.size });
+        const height = styles.input.height;
+
+        return {
+          label: {
+            lineHeight: "20px",
+            marginBottom: 6,
+          },
+          description: {
+            color: themeColor(theme, "carbon", 7),
+          },
+          input: {
+            height: height,
+            minHeight: height,
+            color: themeColor(theme, "carbon", 8),
+
+            ...(props.variant === "unstyled" && {
+              border: "none",
+              "&:disabled": {
+                color: themeColor(theme, "carbon", 7),
+              },
+            }),
+            ...(props.variant === "filled" && {
+              backgroundColor: themeColor(theme, "carbon", 2),
+              borderColor: "transparent",
+
+              "&:disabled": {
+                color: themeColor(theme, "carbon", 6),
+                cursor: "not-allowed",
+              },
+            }),
+          },
+          option: {
+            transition: "background 150ms ease-in-out",
+            color: themeColor(theme, "carbon", 8),
+            "&:hover": {
+              color: themeColor(theme, "carbon", 8),
+              backgroundColor: themeColor(theme, "carbon", 3),
+            },
+            "&[data-checked]": {
+              color: themeColor(theme, "carbon", 8),
+              fontWeight: 700,
+              backgroundColor: "transparent",
+              "&:hover": {
+                backgroundColor: themeColor(theme, "carbon", 3),
+              },
+            },
+          },
+          section: {
+            "& > svg": {
+              color: `${themeColor(theme, "carbon", 7)} !important`,
+            },
+          },
+        };
+      },
+    },
+    MultiSelect: {
+      defaultProps: {
+        size: "md",
+        transition: "fade",
+        transitionDuration: 200,
+        transitionTimingFunction: "ease",
+        withCheckIcon: false,
+      },
+      styles: (theme: MantineTheme, props: MultiSelectProps) => {
+        const styles = getInputStyles(theme, { size: props.size });
+        const inputHeight = styles.input.height;
+        return {
+          label: {
+            fontSize: 14,
+            marginBottom: 6,
+          },
+          input: {
+            paddingTop: 8,
+            paddingBottom: 8,
+          },
+          inputField: {
+            "&::placeholder": {
+              color: themeColor(theme, "carbon", 6),
+            },
+          },
+          wrapper: {
+            height: inputHeight + 2,
+          },
+          pill: {
+            backgroundColor: themeColor(theme, "carbon", 3),
+            color: themeColor(theme, "carbon", 8),
+            borderRadius: theme.radius.sm,
+          },
+          section: {
+            "& > svg": {
+              color: `${themeColor(theme, "carbon", 7)} !important`,
+            },
+          },
+        };
+      },
+    },
+    Input: {
+      defaultProps: {
+        size: "md",
+      },
+      styles: getInputStyles,
+    },
+    TextInput: {
+      defaultProps: {
+        size: "md",
+        inputWrapperOrder: ["label", "input", "description", "error"],
+      },
+      styles: getInputStyles,
+    },
+    PasswordInput: {
+      defaultProps: {
+        size: "md",
+      },
+      styles: getInputStyles,
+    },
+    NumberInput: {
+      defaultProps: {
+        size: "md",
+      },
+      styles: getInputStyles,
+    },
+    Textarea: {
+      styles: (theme: MantineTheme, props: TextareaProps) => {
+        const styles = getInputStyles(theme, props);
+        styles.input.height = undefined;
+        return styles;
+      },
+    },
 
     Card: {
       defaultProps: {
@@ -551,7 +804,7 @@ function useColorScheme() {
 }
 
 function Provider({ children }: { children: React.ReactNode }) {
-  const systemColorScheme = useSystemColorScheme();
+  const systemColorScheme = useOperateSystemColorScheme();
   const { colorScheme } = useColorScheme();
   const colorSchemeResult =
     colorScheme === "auto" ? systemColorScheme : colorScheme;
@@ -742,12 +995,14 @@ function TestMenu() {
           </Menu.Item>
           <Menu.Item
             leftSection={
-              <IconTrash
-                style={{ width: rem(14), height: rem(14), color: "red" }}
+              <Box
+                component={IconTrash}
+                c="red.7"
+                style={{ width: rem(14), height: rem(14) }}
               />
             }
           >
-            <Text c="red">Delete my account</Text>
+            <Text c="red.7">Delete my account</Text>
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>
@@ -834,10 +1089,53 @@ function TestStepper() {
   );
 }
 
+function TestInputAndSelect() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>Input and Select</h2>
+
+      <Stack>
+        <Input placeholder="Input" />
+        <TextInput
+          placeholder="TextInput"
+          label="Name"
+          description="Description"
+          error="Error"
+        />
+        <TextInput placeholder="disabled TextInput" label="Name" disabled />
+        <Select
+          placeholder="Select"
+          data={["Option 1", "Option 2", "Option 3"]}
+        />
+        <MultiSelect
+          placeholder="MultiSelect"
+          data={["Option 1", "Option 2", "Option 3"]}
+        />
+        <Textarea placeholder="Textarea" autosize rows={5} />
+        <PasswordInput placeholder="PasswordInput" error="Error" />
+        <NumberInput placeholder="NumberInput" />
+      </Stack>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
   console.log("computedColorScheme", computedColorScheme);
+
+  const tabItems = [
+    "buttons",
+    "anchors",
+    "skeletons",
+    "tabs",
+    "notifications",
+    "menu",
+    "navlinks",
+    "stepper",
+    "alert",
+    "input-and-select",
+  ];
 
   return (
     <Box p="md">
@@ -854,17 +1152,15 @@ function App() {
         </Button>
       </Group>
 
-      <Tabs defaultValue="buttons" orientation="vertical">
+      <Tabs defaultValue={tabItems.at(-1)} orientation="vertical">
         <Tabs.List>
-          <Tabs.Tab value="buttons">Buttons</Tabs.Tab>
-          <Tabs.Tab value="anchors">Anchors</Tabs.Tab>
-          <Tabs.Tab value="skeletons">Skeletons</Tabs.Tab>
-          <Tabs.Tab value="tabs">Tabs</Tabs.Tab>
-          <Tabs.Tab value="notifications">Notifications</Tabs.Tab>
-          <Tabs.Tab value="menu">Menu</Tabs.Tab>
-          <Tabs.Tab value="navlinks">NavLinks</Tabs.Tab>
-          <Tabs.Tab value="stepper">Stepper</Tabs.Tab>
-          <Tabs.Tab value="alert">Alert</Tabs.Tab>
+          {tabItems.map((item) => {
+            return (
+              <Tabs.Tab key={item} value={item}>
+                {item}
+              </Tabs.Tab>
+            );
+          })}
         </Tabs.List>
 
         <Tabs.Panel value="buttons" pl="md">
@@ -893,6 +1189,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="alert" pl="md">
           <TestAlert />
+        </Tabs.Panel>
+        <Tabs.Panel value="input-and-select" pl="md">
+          <TestInputAndSelect />
         </Tabs.Panel>
       </Tabs>
     </Box>
