@@ -49,8 +49,6 @@ import {
   Checkbox,
   PaperProps,
   Drawer,
-  DrawerProps,
-  ModalBaseOverlayProps,
   Modal,
   TableProps,
   Table,
@@ -69,6 +67,7 @@ import * as dark from "./color.dark";
 import * as light from "./color";
 import type { ShadingColor } from "./color";
 import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
 import {
   EmotionHelpers,
   emotionTransform,
@@ -90,7 +89,7 @@ import {
   IconAdjustments,
   IconRefresh,
 } from "@tabler/icons-react";
-import { transform } from "typescript";
+import { DatePicker } from "@mantine/dates";
 
 export type ColorMap = typeof light;
 export type Color = keyof ColorMap;
@@ -1228,6 +1227,54 @@ const theme = createTheme({
         };
       },
     },
+    DatePicker: {
+      styles: (theme: MantineTheme) => {
+        const color = theme.primaryColor;
+        return {
+          calendarHeaderLevel: {
+            color: themeColor(theme, color, 7),
+          },
+          calendarHeaderControl: {
+            color: `${themeColor(theme, color, 7)} !important`,
+          },
+          weekday: {
+            color: themeColor(theme, color, 7),
+          },
+          day: {
+            color: themeColor(theme, color, 8),
+            "&[data-in-range]": {
+              backgroundColor: themeColor(theme, color, 3),
+              borderRadius: theme.defaultRadius,
+            },
+            "&[data-first-in-range]": {
+              borderRadius: theme.defaultRadius,
+            },
+            "&[data-last-in-range]": {
+              borderRadius: theme.defaultRadius,
+            },
+            "&[data-selected]": {
+              backgroundColor: themeColor(theme, color, 9),
+              color: theme.white,
+            },
+            "&[data-weekend]": {
+              color: themeColor(theme, color, 8),
+              "&[data-selected]": {
+                color: theme.white,
+              },
+              "&[data-disabled], &:disabled": {
+                color: `${themeColor(theme, color, 5)} !important`,
+              },
+            },
+            "&[data-disabled], &:disabled": {
+              color: `${themeColor(theme, color, 5)} !important`,
+            },
+            "&[data-outside]": {
+              color: themeColor(theme, color, 6),
+            },
+          },
+        };
+      },
+    },
 
     Anchor: {
       defaultProps: {
@@ -1833,6 +1880,20 @@ function TestActionIcon() {
   );
 }
 
+function TestDatePicker() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>DatePicker</h2>
+      default
+      <DatePicker />
+      range
+      <DatePicker type="range" />
+      multiple
+      <DatePicker type="multiple" />
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -1859,6 +1920,7 @@ function App() {
     "segmented-control",
     "tooltip",
     "action-icon",
+    "date-picker",
   ];
 
   return (
@@ -1946,6 +2008,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="action-icon" pl="md">
           <TestActionIcon />
+        </Tabs.Panel>
+        <Tabs.Panel value="date-picker" pl="md">
+          <TestDatePicker />
         </Tabs.Panel>
       </Tabs>
     </Box>
