@@ -52,6 +52,9 @@ import {
   DrawerProps,
   ModalBaseOverlayProps,
   Modal,
+  TableProps,
+  Table,
+  TableData,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -933,6 +936,40 @@ const theme = createTheme({
         },
       }),
     },
+    Table: {
+      styles: (theme: MantineTheme, props: TableProps) => {
+        const borderStyles = props.withTableBorder
+          ? {
+              borderCollapse: "separate",
+              borderSpacing: 0,
+              borderRadius: theme.defaultRadius,
+              "thead tr:first-of-type th:first-of-type": {
+                borderTopLeftRadius: theme.defaultRadius,
+              },
+              "thead tr:first-of-type th:last-of-type": {
+                borderTopRightRadius: theme.defaultRadius,
+              },
+            }
+          : {};
+
+        return {
+          table: {
+            ...borderStyles,
+            "--table-border-color": themeColor(theme, "carbon", 3),
+          },
+          thead: {
+            backgroundColor: themeColor(theme, "carbon", 2),
+          },
+          tr: {
+            "&:where([data-with-row-border]):not(:last-of-type)": {
+              td: {
+                borderBottom: `1px solid ${themeColor(theme, "carbon", 3)} !important`,
+              },
+            },
+          },
+        };
+      },
+    },
     Anchor: {
       defaultProps: {
         c: "peacock.7",
@@ -1333,6 +1370,31 @@ function TestModal() {
   );
 }
 
+function TestTable() {
+  const tableData: TableData = {
+    caption: "Some elements from periodic table",
+    head: ["Element position", "Atomic mass", "Symbol", "Element name"],
+    body: [
+      [6, 12.011, "C", "Carbon"],
+      [7, 14.007, "N", "Nitrogen"],
+      [39, 88.906, "Y", "Yttrium"],
+      [56, 137.33, "Ba", "Barium"],
+      [58, 140.12, "Ce", "Cerium"],
+    ],
+  };
+  return (
+    <Card withBorder shadow="md">
+      <h2>Table</h2>
+      <Table
+        withTableBorder
+        withRowBorders={true}
+        withColumnBorders={true}
+        data={tableData}
+      />
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -1353,6 +1415,7 @@ function App() {
     "checkbox",
     "drawer",
     "modal",
+    "table",
   ];
 
   return (
@@ -1422,6 +1485,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="modal" pl="md">
           <TestModal />
+        </Tabs.Panel>
+        <Tabs.Panel value="table" pl="md">
+          <TestTable />
         </Tabs.Panel>
       </Tabs>
     </Box>
