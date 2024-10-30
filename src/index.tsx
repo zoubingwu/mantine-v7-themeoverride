@@ -9,7 +9,6 @@ import {
   useComputedColorScheme,
   getPrimaryShade,
   getThemeColor,
-  getSize,
   rem,
   Card,
   Group,
@@ -18,7 +17,6 @@ import {
   mergeMantineTheme,
   Box,
   Anchor,
-  Divider,
   Skeleton,
   SkeletonProps,
   Tabs,
@@ -50,8 +48,11 @@ import {
   CheckboxProps,
   Checkbox,
   PaperProps,
+  Drawer,
+  DrawerProps,
+  ModalBaseOverlayProps,
 } from "@mantine/core";
-import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
+import { useDisclosure, useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
 import * as light from "./color";
 import type { ShadingColor } from "./color";
@@ -883,6 +884,15 @@ const theme = createTheme({
         };
       },
     },
+    Drawer: {
+      defaultProps: (theme: MantineTheme) => ({
+        overlayProps: {
+          opacity: 0.9,
+          blur: 3,
+          color: themeColor(theme, "carbon", 2),
+        },
+      }),
+    },
     Anchor: {
       defaultProps: {
         c: "peacock.7",
@@ -1255,6 +1265,20 @@ function TestCheckbox() {
   );
 }
 
+function TestDrawer() {
+  const [opened, { open, close }] = useDisclosure(false);
+  return (
+    <Card withBorder shadow="md">
+      <h2>Drawer</h2>
+      <Drawer opened={opened} onClose={close} title="Authentication">
+        {/* Drawer content */}
+      </Drawer>
+
+      <Button onClick={open}>Open Drawer</Button>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -1273,6 +1297,7 @@ function App() {
     "input-and-select",
     "badge",
     "checkbox",
+    "drawer",
   ];
 
   return (
@@ -1336,6 +1361,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="checkbox" pl="md">
           <TestCheckbox />
+        </Tabs.Panel>
+        <Tabs.Panel value="drawer" pl="md">
+          <TestDrawer />
         </Tabs.Panel>
       </Tabs>
     </Box>
