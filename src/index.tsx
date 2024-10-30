@@ -46,6 +46,7 @@ import {
   NumberInput,
   Stack,
   TextInput,
+  BadgeProps,
 } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -764,6 +765,63 @@ const theme = createTheme({
         return styles;
       },
     },
+    Badge: {
+      defaultProps: {
+        color: "peacock",
+        size: "md",
+      },
+      styles(theme: MantineTheme, props: BadgeProps) {
+        const color = props.color ?? theme.primaryColor;
+        const mainShade = color.includes("carbon") ? 9 : 7;
+
+        const sizes = {
+          xs: 11,
+          sm: 12,
+          md: 13,
+          lg: 14,
+          xl: 16,
+        };
+
+        // @ts-ignore
+        const fontSize = sizes[props.size];
+
+        const styles = {
+          dot: {
+            border: "none",
+            textTransform: "capitalize",
+            fontWeight: 400,
+            fontSize,
+            backgroundColor: "transparent",
+            color: themeColor(theme, theme.primaryColor, 8),
+            padding: 0,
+            borderRadius: 0,
+
+            "&:before": {
+              backgroundColor: themeColor(theme, color, 7),
+            },
+          },
+          outline: {
+            color: themeColor(theme, color, mainShade),
+            borderColor: themeColor(theme, color, 4),
+          },
+          light: {
+            backgroundColor: themeColor(theme, color, 1),
+            color: themeColor(theme, color, mainShade),
+          },
+          filled: {
+            backgroundColor: themeColor(theme, color, mainShade),
+            color: theme.white,
+          },
+        };
+
+        return {
+          root: {
+            // @ts-ignore
+            ...styles[props.variant],
+          },
+        };
+      },
+    },
 
     Card: {
       defaultProps: {
@@ -1119,6 +1177,32 @@ function TestInputAndSelect() {
   );
 }
 
+function TestBadge() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>Badge</h2>
+      <Group>
+        {variants.map((variant) => {
+          return sizes.map((size) => {
+            return (
+              <Badge key={`${variant}-${size}`} variant={variant} size={size}>
+                {variant} {size}
+              </Badge>
+            );
+          });
+        })}
+        <Badge
+          variant="gradient"
+          gradient={{ deg: 115, from: "#FC00CF", to: "#CCFFEF" }}
+        >
+          hex gradient
+        </Badge>
+        <Badge variant="dot">Running</Badge>
+      </Group>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -1135,6 +1219,7 @@ function App() {
     "stepper",
     "alert",
     "input-and-select",
+    "badge",
   ];
 
   return (
@@ -1192,6 +1277,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="input-and-select" pl="md">
           <TestInputAndSelect />
+        </Tabs.Panel>
+        <Tabs.Panel value="badge" pl="md">
+          <TestBadge />
         </Tabs.Panel>
       </Tabs>
     </Box>
