@@ -59,6 +59,7 @@ import {
   Switch,
   RadioProps,
   Radio,
+  SegmentedControl,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -1078,6 +1079,31 @@ const theme = createTheme({
         };
       },
     },
+    SegmentedControl: {
+      styles: (theme: MantineTheme) => {
+        return {
+          root: {
+            backgroundColor: themeColor(theme, "carbon", 4),
+          },
+          indicator: {
+            backgroundColor: themeColor(theme, "carbon", 0),
+          },
+          label: {
+            color: themeColor(theme, "carbon", 7) + " !important",
+            "&[data-active]": {
+              color: themeColor(theme, "carbon", 9) + " !important",
+            },
+            "&[data-disabled]": {
+              color: themeColor(theme, "carbon", 6) + " !important",
+            },
+          },
+
+          control: {
+            "--separator-color": themeColor(theme, "carbon", 5),
+          },
+        };
+      },
+    },
 
     Anchor: {
       defaultProps: {
@@ -1560,6 +1586,15 @@ function TestRadio() {
   );
 }
 
+function TestSegmentedControl() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>SegmentedControl</h2>
+      <SegmentedControl data={["React", "Angular", "Vue", "Svelte"]} />
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -1583,6 +1618,7 @@ function App() {
     "table",
     "switch",
     "radio",
+    "segmented-control",
   ];
 
   return (
@@ -1661,6 +1697,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="radio" pl="md">
           <TestRadio />
+        </Tabs.Panel>
+        <Tabs.Panel value="segmented-control" pl="md">
+          <TestSegmentedControl />
         </Tabs.Panel>
       </Tabs>
     </Box>
