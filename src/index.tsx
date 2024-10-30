@@ -55,6 +55,8 @@ import {
   TableProps,
   Table,
   TableData,
+  SwitchProps,
+  Switch,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -970,6 +972,48 @@ const theme = createTheme({
         };
       },
     },
+    Switch: {
+      styles: (theme: MantineTheme, props: SwitchProps) => {
+        const color = props.color ?? theme.primaryColor;
+
+        return {
+          root: {
+            "& input:checked+.mantine-Switch-track": {
+              backgroundColor: themeColor(theme, color, 9),
+              borderColor: themeColor(theme, color, 9),
+            },
+            "& input:disabled+.mantine-Switch-track": {
+              backgroundColor: themeColor(theme, color, 4),
+              borderColor: themeColor(theme, color, 4),
+            },
+            "& input:disabled:checked+.mantine-Switch-track": {
+              backgroundColor: themeColor(theme, color, 7),
+              borderColor: themeColor(theme, color, 7),
+            },
+
+            "& input+*>.mantine-Switch-trackLabel": {
+              color: themeColor(theme, color, 8),
+            },
+            "& input:checked+*>.mantine-Switch-trackLabel": {
+              color: themeColor(theme, color, 0),
+            },
+          },
+          label: {
+            "&[data-disabled]": {
+              color: themeColor(theme, color, 6),
+            },
+          },
+          track: {
+            backgroundColor: themeColor(theme, color, 5),
+            borderColor: themeColor(theme, color, 5),
+          },
+          trackLabel: {
+            color: themeColor(theme, color, 8),
+          },
+        };
+      },
+    },
+
     Anchor: {
       defaultProps: {
         c: "peacock.7",
@@ -1395,6 +1439,21 @@ function TestTable() {
   );
 }
 
+function TestSwitch() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>Switch</h2>
+      <Switch
+        defaultChecked
+        label="I agree to sell my privacy"
+        onLabel="On"
+        offLabel="Off"
+        disabled
+      />
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -1416,6 +1475,7 @@ function App() {
     "drawer",
     "modal",
     "table",
+    "switch",
   ];
 
   return (
@@ -1488,6 +1548,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="table" pl="md">
           <TestTable />
+        </Tabs.Panel>
+        <Tabs.Panel value="switch" pl="md">
+          <TestSwitch />
         </Tabs.Panel>
       </Tabs>
     </Box>
