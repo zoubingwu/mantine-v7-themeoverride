@@ -47,6 +47,8 @@ import {
   Stack,
   TextInput,
   BadgeProps,
+  CheckboxProps,
+  Checkbox,
 } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -822,7 +824,39 @@ const theme = createTheme({
         };
       },
     },
+    Checkbox: {
+      styles(theme: MantineTheme, params: CheckboxProps) {
+        const withThemeColor = (shade: number) =>
+          themeColor(theme, params.color ?? theme.primaryColor, shade);
+        return {
+          input: {
+            borderRadius: 4,
+            borderColor: withThemeColor(6),
 
+            "&:checked:not(:disabled)": {
+              backgroundColor: withThemeColor(9),
+              borderColor: withThemeColor(9),
+            },
+            "&:disabled:checked": {
+              backgroundColor: themeColor(theme, "carbon", 6),
+              borderColor: themeColor(theme, "carbon", 6),
+            },
+          },
+          label: {
+            color: themeColor(theme, "carbon", 8),
+
+            "&[data-disabled]": {
+              color: themeColor(theme, "carbon", 6),
+            },
+          },
+        };
+      },
+    },
+    Divider: {
+      defaultProps: {
+        color: "carbon.4",
+      },
+    },
     Card: {
       defaultProps: {
         shadow: "xs",
@@ -839,11 +873,6 @@ const theme = createTheme({
     Anchor: {
       defaultProps: {
         c: "peacock.7",
-      },
-    },
-    Divider: {
-      defaultProps: {
-        color: "carbon.4",
       },
     },
   },
@@ -1203,6 +1232,16 @@ function TestBadge() {
   );
 }
 
+function TestCheckbox() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>Checkbox</h2>
+      <Checkbox label="I agree to sell my privacy" defaultChecked />
+      <Checkbox label="I agree to sell my privacy" disabled defaultChecked />
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -1220,6 +1259,7 @@ function App() {
     "alert",
     "input-and-select",
     "badge",
+    "checkbox",
   ];
 
   return (
@@ -1280,6 +1320,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="badge" pl="md">
           <TestBadge />
+        </Tabs.Panel>
+        <Tabs.Panel value="checkbox" pl="md">
+          <TestCheckbox />
         </Tabs.Panel>
       </Tabs>
     </Box>
