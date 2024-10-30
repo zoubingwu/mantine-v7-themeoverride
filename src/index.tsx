@@ -61,6 +61,8 @@ import {
   Radio,
   SegmentedControl,
   Tooltip,
+  ActionIconProps,
+  ActionIcon,
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -83,6 +85,10 @@ import {
   IconTrash,
   IconArrowsLeftRight,
   IconInfoCircle,
+  IconHeart,
+  IconExternalLink,
+  IconAdjustments,
+  IconRefresh,
 } from "@tabler/icons-react";
 import { transform } from "typescript";
 
@@ -1118,6 +1124,110 @@ const theme = createTheme({
         };
       },
     },
+    ActionIcon: {
+      defaultProps: {
+        color: "carbon",
+      },
+      styles(theme: MantineTheme, props: ActionIconProps) {
+        const color = props.color ?? theme.primaryColor;
+        const shade = color.includes("carbon") ? 8 : 7;
+
+        const variantStyles = {
+          default: {
+            backgroundColor: themeColor(theme, color, 2),
+            borderColor: themeColor(theme, color, 5),
+            color: themeColor(theme, color, 8),
+
+            "&:hover": {
+              backgroundColor: themeColor(theme, color, 3),
+              borderColor: themeColor(theme, color, 6),
+              color: themeColor(theme, color, 9),
+            },
+            "&:active": {
+              backgroundColor: themeColor(theme, color, 4),
+              borderColor: themeColor(theme, color, 6),
+              color: themeColor(theme, color, 9),
+            },
+
+            "&:disabled": {
+              backgroundColor: themeColor(theme, color, 2),
+              borderColor: themeColor(theme, color, 5),
+              color: themeColor(theme, color, 6),
+            },
+          },
+          transparent: {
+            backgroundColor: "transparent",
+            color: themeColor(theme, color, shade),
+          },
+          subtle: {
+            backgroundColor: "transparent",
+            color: themeColor(theme, color, 8),
+            borderColor: "transparent",
+
+            "&:hover": {
+              backgroundColor: themeColor(theme, color, 3),
+            },
+            "&:active": {
+              backgroundColor: themeColor(theme, color, 4),
+            },
+            "&:disabled": {
+              color: themeColor(theme, color, 6),
+              backgroundColor: "transparent",
+              borderColor: "transparent",
+              cursor: "not-allowed",
+            },
+          },
+          outline: {
+            backgroundColor: "transparent",
+            color: themeColor(theme, color, shade),
+            border: `1px solid ${themeColor(theme, color, 4)}`,
+            "&:hover": {
+              backgroundColor: themeColor(theme, color, 2),
+            },
+          },
+          filled: {
+            backgroundColor: themeColor(
+              theme,
+              color,
+              color.includes("carbon") ? 9 : 7,
+            ),
+            color: theme.white,
+          },
+          light: {
+            backgroundColor: themeColor(theme, color, 3),
+            color: themeColor(theme, color, 8),
+            "&:hover": {
+              backgroundColor: themeColor(theme, color, 4),
+            },
+            "&:active": {
+              backgroundColor: themeColor(theme, color, 5),
+            },
+          },
+        };
+
+        const sizes = {
+          xs: 16,
+          sm: 20,
+          md: 28,
+          lg: 32,
+          xl: 40,
+        };
+        // @ts-ignore
+        const size = sizes[props.size ?? "md"];
+        // @ts-ignore
+        const variantStyle = variantStyles[props.variant ?? "default"];
+
+        return {
+          root: {
+            ...variantStyle,
+            width: size,
+            height: size,
+            minWidth: size,
+            minHeight: size,
+          },
+        };
+      },
+    },
 
     Anchor: {
       defaultProps: {
@@ -1620,6 +1730,109 @@ function TestTooltip() {
   );
 }
 
+function TestActionIcon() {
+  return (
+    <Card withBorder shadow="md">
+      <h2>ActionIcon</h2>
+      <Group justify="center">
+        <ActionIcon
+          size={42}
+          variant="default"
+          aria-label="ActionIcon with size as a number"
+        >
+          <IconHeart style={{ width: rem(24), height: rem(24) }} />
+        </ActionIcon>
+        <ActionIcon
+          variant="gradient"
+          size="xl"
+          aria-label="Gradient action icon"
+          gradient={{ from: "blue", to: "cyan", deg: 90 }}
+        >
+          <IconHeart />
+        </ActionIcon>
+        <ActionIcon variant="default" aria-label="Settings">
+          <IconAdjustments
+            style={{ width: "70%", height: "70%" }}
+            stroke={1.5}
+          />
+        </ActionIcon>
+        <ActionIcon
+          size="xl"
+          disabled
+          aria-label="Disabled and not interactive"
+        >
+          <IconHeart />
+        </ActionIcon>
+
+        <ActionIcon
+          size="xl"
+          data-disabled
+          aria-label="Has disabled styles but still interactive"
+        >
+          <IconExternalLink />
+        </ActionIcon>
+
+        <Group>
+          <Stack>
+            default
+            <ActionIcon>
+              <IconRefresh size={16} />
+            </ActionIcon>
+          </Stack>
+
+          <Stack>
+            transparent
+            <ActionIcon variant="transparent">
+              <IconRefresh size={16} />
+            </ActionIcon>
+          </Stack>
+
+          <Stack>
+            subtle
+            <ActionIcon variant="subtle">
+              <IconRefresh size={16} />
+            </ActionIcon>
+            <ActionIcon variant="subtle" disabled>
+              <IconRefresh size={16} />
+            </ActionIcon>
+          </Stack>
+
+          <Stack>
+            default
+            <ActionIcon variant="default">
+              <IconRefresh size={16} />
+            </ActionIcon>
+            <ActionIcon variant="default" disabled>
+              <IconRefresh size={16} />
+            </ActionIcon>
+          </Stack>
+
+          <Stack>
+            outline
+            <ActionIcon variant="outline">
+              <IconRefresh size={16} />
+            </ActionIcon>
+          </Stack>
+
+          <Stack>
+            filled
+            <ActionIcon variant="filled">
+              <IconRefresh size={16} />
+            </ActionIcon>
+          </Stack>
+
+          <Stack>
+            light
+            <ActionIcon variant="light">
+              <IconRefresh size={16} />
+            </ActionIcon>
+          </Stack>
+        </Group>
+      </Group>
+    </Card>
+  );
+}
+
 function App() {
   const { setColorScheme } = useColorScheme();
   const computedColorScheme = useComputedColorScheme("light");
@@ -1645,6 +1858,7 @@ function App() {
     "radio",
     "segmented-control",
     "tooltip",
+    "action-icon",
   ];
 
   return (
@@ -1729,6 +1943,9 @@ function App() {
         </Tabs.Panel>
         <Tabs.Panel value="tooltip" pl="md">
           <TestTooltip />
+        </Tabs.Panel>
+        <Tabs.Panel value="action-icon" pl="md">
+          <TestActionIcon />
         </Tabs.Panel>
       </Tabs>
     </Box>
