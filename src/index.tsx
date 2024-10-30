@@ -49,6 +49,7 @@ import {
   BadgeProps,
   CheckboxProps,
   Checkbox,
+  PaperProps,
 } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import * as dark from "./color.dark";
@@ -825,9 +826,9 @@ const theme = createTheme({
       },
     },
     Checkbox: {
-      styles(theme: MantineTheme, params: CheckboxProps) {
+      styles(theme: MantineTheme, props: CheckboxProps) {
         const withThemeColor = (shade: number) =>
-          themeColor(theme, params.color ?? theme.primaryColor, shade);
+          themeColor(theme, props.color ?? theme.primaryColor, shade);
         return {
           input: {
             borderRadius: 4,
@@ -866,6 +867,18 @@ const theme = createTheme({
         return {
           root: {
             backgroundColor: theme.colors.carbon[0],
+          },
+        };
+      },
+    },
+    Paper: {
+      styles: (theme: MantineTheme, props: PaperProps) => {
+        return {
+          root: {
+            backgroundColor: themeColor(theme, "carbon", 0),
+            borderColor: props.withBorder
+              ? themeColor(theme, "carbon", 3)
+              : "transparent",
           },
         };
       },
